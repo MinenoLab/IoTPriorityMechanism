@@ -1,0 +1,21 @@
+CXXFLAGS =-g -Wall -fmessage-length=0  -std=c++0x
+
+BDIR := ../core
+
+APISRCS := $(BDIR)/NormalIoTDevices.cpp $(BDIR)/StateBase.cpp $(BDIR)/DeviceState/DState50.cpp $(BDIR)/DeviceState/DState51.cpp $(BDIR)/structure/MetaData.cpp $(BDIR)/structure/PriorityMessage.cpp $(BDIR)/structure/PermitFormat.cpp $(BDIR)/structure/PriReturnValue.cpp $(BDIR)/structure/IoTDeviceBuffer.cpp $(BDIR)/structure/AATableEntitiy.cpp $(BDIR)/utils/SyncBaseSockSession.cpp $(BDIR)/utils/SyncClientSocket.cpp $(BDIR)/utils/BinaryConverter.cpp $(BDIR)/iEntity.cpp $(BDIR)/StateSwicher.cpp $(BDIR)/structure/PTEntitiy.cpp
+
+SRCS = $(APISRCS) NomalSendDeviceDouble.cpp
+
+OBJS := $(SRCS:.cpp=.o)
+
+LIBS = -L/usr/include -lboost_system -lboost_filesystem -lpthread
+
+TARGET =2015IotPriorityLimiter_tnormaldevice
+
+$(TARGET):	$(OBJS)
+	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
+
+all:	$(TARGET)
+
+clean:
+	rm -f $(OBJS) $(TARGET)

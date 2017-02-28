@@ -1,0 +1,21 @@
+CXXFLAGS =-g -Wall -fmessage-length=0  -std=c++0x
+
+BDIR := ../core
+
+APISRCS := $(BDIR)/BrokerServer.cpp $(BDIR)/StateBase.cpp $(BDIR)/BrokerState/InterruptController.cpp $(BDIR)/BrokerState/BState00.cpp $(BDIR)/BrokerState/BState04.cpp $(BDIR)/BrokerState/BState05.cpp $(BDIR)/BrokerState/BState06.cpp $(BDIR)/BrokerState/BState07.cpp $(BDIR)/BrokerState/BState10.cpp $(BDIR)/BrokerState/BState11.cpp $(BDIR)/structure/AATableEntitiy.cpp $(BDIR)/structure/MetaData.cpp $(BDIR)/structure/PriorityMessage.cpp $(BDIR)/structure/APAdminTable.cpp $(BDIR)/structure/DATableEntitity.cpp $(BDIR)/structure/DeviceAdminTable.cpp $(BDIR)/structure/MultiMassagePriorityQueue.cpp $(BDIR)/structure/PermitFormat.cpp $(BDIR)/structure/PriReturnValue.cpp $(BDIR)/structure/PTEntitiy.cpp $(BDIR)/structure/UpdateMessage.cpp $(BDIR)/utils/SyncBaseSockSession.cpp $(BDIR)/utils/SyncServerSockets.cpp $(BDIR)/utils/BinaryConverter.cpp $(BDIR)/iEntity.cpp $(BDIR)/StateSwicher.cpp
+
+SRCS = $(APISRCS) sampleBroker.cpp
+
+OBJS := $(SRCS:.cpp=.o)
+
+LIBS = -L/usr/include -lboost_system -lboost_filesystem -lpthread
+
+TARGET =2015IotPriorityLimiter_brserver
+
+$(TARGET):	$(OBJS)
+	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
+
+all:	$(TARGET)
+
+clean:
+	rm -f $(OBJS) $(TARGET)
