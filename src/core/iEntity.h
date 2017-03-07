@@ -18,8 +18,8 @@
 
 namespace IoTPriority {
 
-using namespace boost;
-typedef bimaps::bimap<int,int>::value_type bival;
+
+typedef boost::bimaps::bimap<int,int>::value_type bival;
 
 /**
  * @breif 各エンティティの基底クラス

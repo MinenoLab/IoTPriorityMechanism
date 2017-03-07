@@ -16,18 +16,18 @@
 #include <boost/asio.hpp>
 #include "SyncBaseSockSession.h"
 
-namespace asio = boost::asio;
-using asio::ip::tcp;
+
+using boost::asio::ip::tcp;
 
 namespace IoTPriority {
 
 class Sync_ServerSockets {
 public:
-	Sync_ServerSockets(asio::io_service& io_service, int port,
+	Sync_ServerSockets(boost::asio::io_service& io_service, int port,
 			std::function<void(std::string, int)> recvfunc);
 	virtual ~Sync_ServerSockets();
 	void accept(int maxaccept);
-	void basic_send(std::shared_ptr<std::string> data,int sesid);
+	bool basic_send(std::shared_ptr<std::string> data,int sesid);
 	std::string basic_recv(int sesid);
 	void start_sendrecv_forever(bool send,bool recv);
 	void pause_sendrecv_forever(int sesid);
@@ -42,7 +42,7 @@ private:
 	std::shared_ptr<tcp::acceptor> Acceptor;
 	tcp::socket sock;
 	int sockIdCounter;
-	asio::io_service& Io_service;
+	boost::asio::io_service& Io_service;
 	int port;
 	bool isReady;
 	std::function<void(std::string, int)> On_recv_func;

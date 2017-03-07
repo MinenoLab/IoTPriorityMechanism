@@ -10,7 +10,7 @@ OBJS := $(SRCS:.cpp=.o)
 
 LIBS = -L/usr/include -lboost_system -lboost_filesystem -lpthread
 
-TARGET =2015IotPriorityLimiter_device
+TARGET =IotPriorityMechanism_device
 
 $(TARGET):	$(OBJS)
 	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)

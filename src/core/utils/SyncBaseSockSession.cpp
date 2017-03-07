@@ -68,9 +68,10 @@ bool Sync_BaseSockSession::basic_send(std::shared_ptr<std::string> data) {
 	if (!sendstack.empty())
 		sendSeq();
 
-	asio::write(sock, asio::buffer(*data), error);
+	boost::asio::write(sock, boost::asio::buffer(*data), error);
 	if (error) {
 		std::cerr << "send failed : " << error.message() << std::endl;
+		std::cout << iEntity::strnowtime() << "send failed!" << std::endl;
 		if (isServer) {
 			sstate = SockState::CLOSE;
 		} else {
@@ -102,10 +103,12 @@ std::string Sync_BaseSockSession::basic_recv() {
 		std::unique_lock<std::mutex> lk(recvmtx);
 		boost::system::error_code error;
 
-		size_t bytes = asio::read(sock, asio::buffer(buf, 4096),
-				asio::transfer_at_least(4), error);
-		if (error && error != asio::error::eof) {
+		size_t bytes = boost::asio::read(sock, boost::asio::buffer(buf, 4096),
+				boost::asio::transfer_at_least(4), error);
+		if (error && error != boost::asio::error::eof) {
 			std::cout << "receive failed: " << error.message() << std::endl;
+			std::cout << iEntity::strnowtime() << "recieve failed!"
+					<< error.message() << std::endl;
 			if (isServer) {
 				sstate = SockState::CLOSE;
 			} else {
@@ -194,10 +197,13 @@ void Sync_BaseSockSession::send_forever() {
 				if (sstate == SockState::ACTIVE) {
 					std::string depdata = senddata.substr(0, depbytes);
 					checkSameSeq(std::make_shared<std::string>(depdata));
-					asio::write(sock, asio::buffer(depdata), error);
+					boost::asio::write(sock, boost::asio::buffer(depdata),
+							error);
 					if (error) {
 						std::cout << "send failed : " << error.message()
 								<< std::endl;
+						std::cout << iEntity::strnowtime() << "send failed! : "
+								<< error.message() << std::endl;
 						if (isServer) {
 							sstate = SockState::CLOSE;
 						} else {
@@ -213,8 +219,11 @@ void Sync_BaseSockSession::send_forever() {
 							std::make_shared<
 									std::pair<std::shared_ptr<std::string>,
 											float>>(
-									std::make_pair(senddata, curRate)));
+									std::make_pair(
+											std::make_shared<std::string>(
+													senddata), curRate)));
 					sendqueue.next();
+					std::cerr<<"sending paused..."<<std::endl;
 					return;
 				}
 
@@ -289,12 +298,13 @@ void Sync_BaseSockSession::recv_forever() {
 		//basicRecvが呼び出されていない時のみ実行
 		if (!state) {
 			if (sstate != SockState::ACTIVE)
-					return;
+				return;
 			std::unique_lock<std::mutex> lk(recvmtx);
 			boost::system::error_code error;
-			size_t bytes = asio::read(sock, asio::buffer(buf, 4096),
-					asio::transfer_at_least(4), error);
-			if (error && error != asio::error::eof) {
+			size_t bytes = boost::asio::read(sock,
+					boost::asio::buffer(buf, 4096),
+					boost::asio::transfer_at_least(4), error);
+			if (error && error != boost::asio::error::eof) {
 				std::cout << "receive failed: " << error.message() << std::endl;
 				if (isServer) {
 					sstate = SockState::CLOSE;
@@ -435,7 +445,7 @@ void Sync_BaseSockSession::sendSeq() {
 	for (int i = 0; i < 6; i++) {
 		data += '1';
 	}
-	asio::write(sock, asio::buffer(data), error);
+	boost::asio::write(sock, boost::asio::buffer(data), error);
 	if (error) {
 		std::cerr << "send failed : " << error.message() << std::endl;
 	} else {

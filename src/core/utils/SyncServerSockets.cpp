@@ -9,7 +9,7 @@
 
 namespace IoTPriority {
 
-Sync_ServerSockets::Sync_ServerSockets(asio::io_service& io_service, int port,
+Sync_ServerSockets::Sync_ServerSockets(boost::asio::io_service& io_service, int port,
 		std::function<void(std::string, int)> recvfunc) :
 		Io_service(io_service), port(port), sock(io_service), On_recv_func(
 				recvfunc), isReady(false), sockIdCounter(0),changefunc(NULL) {
@@ -56,11 +56,11 @@ void Sync_ServerSockets::setchangeListener(std::function<void(int)> func){
 	changefunc=func;
 }
 
-void Sync_ServerSockets::basic_send(std::shared_ptr<std::string> data,
+bool Sync_ServerSockets::basic_send(std::shared_ptr<std::string> data,
 		int sesid) {
 	if (!isReady)
-		return;
-	acceptedSocks[sesid].first->basic_send(data);
+		return false;
+	return acceptedSocks[sesid].first->basic_send(data);
 }
 
 std::string Sync_ServerSockets::basic_recv(int sesid) {

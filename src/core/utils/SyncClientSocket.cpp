@@ -9,13 +9,13 @@
 
 namespace IoTPriority {
 
-Sync_ClientSocket::Sync_ClientSocket(asio::io_service& io_service,
+Sync_ClientSocket::Sync_ClientSocket(boost::asio::io_service& io_service,
 		std::string hostname, int port,
 		std::function<void(std::string, int)> recvfunc) :
 		Io_service(io_service), hostname(hostname), port(port), sock(
 				io_service), On_recv_func(recvfunc), isReady(false) {
 	boost::system::error_code error;
-	sock.connect(tcp::endpoint(asio::ip::address::from_string(hostname), port),
+	sock.connect(tcp::endpoint(boost::asio::ip::address::from_string(hostname), port),
 			error);
 	if (error) {
 		std::cout << "connect failed : " << error.message() << std::endl;
@@ -39,14 +39,15 @@ bool Sync_ClientSocket::reconnect() {
 	boost::system::error_code error;
 	pause_sendrecv_forever();
 	Session->notifyRecconect();
-	sock = asio::basic_stream_socket<tcp>(Io_service);
-	sock.connect(tcp::endpoint(asio::ip::address::from_string(hostname), port),
+	std::cerr<<"recconect -connectting...-"<<std::endl;
+	sock = boost::asio::basic_stream_socket<tcp>(Io_service);
+	sock.connect(tcp::endpoint(boost::asio::ip::address::from_string(hostname), port),
 			error);
 	if (error) {
-		std::cout << "reconnect failed : " << error.message() << std::endl;
+		std::cout <<iEntity::strnowtime()<< "reconnect failed : " << error.message() << std::endl;
 		std::cerr << "reconnect failed : " << error.message() << std::endl;
 	} else {
-		std::cout << "reconnect success : " << error.message() << std::endl;
+		std::cout <<iEntity::strnowtime() <<"reconnect success : " << error.message() << std::endl;
 		std::cerr << "reconnect success : " << error.message() << std::endl;
 		Session->recconect_init(std::move(sock));
 		start_sendrecv_forever(sendforever,recvforever);
@@ -81,7 +82,7 @@ void Sync_ClientSocket::start_sendrecv_forever(bool send, bool recv) {
 	recvforever = recv;
 }
 
-void Sync_ClientSocket::stop_sendrecv_forever() {
+void Sync_ClientSocket::pause_sendrecv_forever() {
 	Session->stop_sendrecv_forever();
 }
 

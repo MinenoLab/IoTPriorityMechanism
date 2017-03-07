@@ -369,7 +369,7 @@ int BrokerServer::getPriorityValueFromTable(std::shared_ptr<MetaData> mdata,
 //-----------------------Exec on NetworkThreads-------------------------
 void BrokerServer::onRecv_base(std::string data, int sesid,
 		Multi_MessageQueue<PriorityMessage>* recvqueue,
-		bimaps::bimap<int, int>* sesidmap, std::string* remaindata,
+		boost::bimaps::bimap<int, int>* sesidmap, std::string* remaindata,
 		std::shared_ptr<Sync_ServerSockets> sock) {
 	auto pushdata = *remaindata + data;
 	while (1) {
@@ -379,7 +379,8 @@ void BrokerServer::onRecv_base(std::string data, int sesid,
 			break;
 		if (mess->getMessType() == PriorityMessage::MESSTYPE_CONNECT)
 			onExecute_connect(mess, sesidmap, sesid, sock);
-		recvqueue->push(mess);
+		else
+			recvqueue->push(mess);
 		std::cerr << "recived ID : " << mess->getSenderDeviceID()
 				<< " messtype : " << mess->getMessType() << std::endl;
 		pushdata = rdata;
@@ -400,9 +401,9 @@ void BrokerServer::onRecvfromAPServer(std::string data, int sesid) {
 }
 
 void BrokerServer::onExecute_connect(std::shared_ptr<PriorityMessage> mess,
-		bimaps::bimap<int, int>* sesidmap, int sesid,
+		boost::bimaps::bimap<int, int>* sesidmap, int sesid,
 		std::shared_ptr<Sync_ServerSockets> sock) {
-
+	std::cerr << "[BR] recieve connect from " << mess->getSenderDeviceID() << std::endl;
 	auto mit = sesidmap->left.find(mess->getSenderDeviceID());
 	if (mit == sesidmap->left.end()) {
 		sesidmap->left.insert(std::make_pair(mess->getSenderDeviceID(), sesid));

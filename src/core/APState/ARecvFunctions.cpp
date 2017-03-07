@@ -9,7 +9,7 @@
 
 namespace IoTPriority {
 
-A_RecvFunctions::A_RecvFunctions(std::shared_ptr<AppServer> server) {
+A_RecvFunctions::A_RecvFunctions(std::shared_ptr<AppServer> server):Server(server) {
 	// TODO 自動生成されたコンストラクター・スタブ
 
 }
@@ -31,12 +31,15 @@ void A_RecvFunctions::mesureLength(std::shared_ptr<PriorityMessage> mess,
 }
 
 std::string A_RecvFunctions::execute_connect(std::shared_ptr<PriorityMessage> mess,int sesid,std::string rdata) {
+	std::cerr<<"connect message recieved"<<std::endl;
 	auto mit = Server->dvid_sesid_map.left.find(mess->getSenderDeviceID());
 	if (mit == Server->dvid_sesid_map.left.end()) {
+		std::cerr<<"connect from new DeviceID "<< mess->getSenderDeviceID()<<std::endl;
 		Server->dvid_sesid_map.insert(bival(mess->getSenderDeviceID(), sesid));
 		return rdata;
 	} else if (BinaryConverter::strtoInt8(*mess->getContentData())==1) {//TODO prioritymessageに1=trueという定義を追記
 		//もし再接続なら
+		std::cerr<<"reconnect from DeviceID "<< mess->getSenderDeviceID()<<std::endl;
 		int prev_sesid = mit->get_right();
 		//既に別のセッションが同じdeviceIDを使っている->マップの置き換え
 		Server->dvid_sesid_map.left.replace_data(mit, sesid);

@@ -11,7 +11,7 @@
 namespace IoTPriority {
 
 D_State05::D_State05(std::shared_ptr<IoTDevices> device) :
-		device(device),{
+		device(device){
 	// TODO 自動生成されたコンストラクター・スタブ
 
 }

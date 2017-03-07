@@ -12,6 +12,7 @@
 #include <memory>
 #include <iostream>
 #include <boost/system/error_code.hpp>
+#include <boost/asio.hpp>
 #include <thread>
 #include <mutex>
 #include <sys/time.h>
@@ -27,8 +28,9 @@
 #include "StateBase.h"
 
 
-
 namespace IoTPriority {
+
+class A_RecvFunctions;
 
 class AppServer: public IoTPriority::iEntity,
 		public std::enable_shared_from_this<AppServer> {
@@ -182,7 +184,7 @@ public:
 	void pushtoUserQueue(std::shared_ptr<PriorityMessage> mess);
 	std::string getDeviceRemainData(int sesid);
 	//<did,sesid>
-	bimaps::bimap<int,int> dvid_sesid_map;
+	boost::bimaps::bimap<int,int> dvid_sesid_map;
 
 	const std::string name_state0 = "State0";
 	const std::string name_state1 = "State1";
@@ -197,7 +199,7 @@ public:
 private:
 	std::shared_ptr<Sync_ServerSockets> toIotDeviceSocket;
 	std::shared_ptr<Sync_ClientSocket> toBrokerSocket;
-	asio::io_service io_service_BR, io_service_DV;
+	boost::asio::io_service io_service_BR, io_service_DV;
 
 	std::shared_ptr<A_RecvFunctions> recvFunctions;
 
@@ -353,7 +355,6 @@ public:
 private:
 	std::shared_ptr<AppServer> Server;
 };
-
 
 } /* namespace IoTPriority */
 #endif /* APPSERVER_H_ */

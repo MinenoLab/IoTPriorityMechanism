@@ -69,7 +69,7 @@ void IoTDevices::initState() {
 			std::make_shared<D_State09>(shared_from_this()), name_state5);
 	auto state10 = std::make_shared<StateSwicher>(
 			std::make_shared<D_State10>(shared_from_this()), name_state5);
-	auto state11=std::make_shared<StateSwicher>(
+	auto state11 = std::make_shared<StateSwicher>(
 			std::make_shared<D_State11>(shared_from_this()), name_state5);
 	//状態登録(状態名、状態)
 	registState(name_state0, state0);
@@ -89,6 +89,19 @@ void IoTDevices::run_Entitiy() {
 	if (ret < 0)
 		std::cout << "State not found!!" << std::endl;
 	std::cerr << "Device:init OK" << std::endl;
+
+	//connectメッセージ送信
+	PriorityMessage mess;
+	std::string payload = BinaryConverter::int8toStr(0);
+	mess.makeMessage(getDeviceID(), iEntity::BROKER_DEVICEID,
+			PriorityMessage::MESSTYPE_CONNECT, PriorityMessage::NOACK,
+			std::make_shared<std::string>(payload));
+	br_send(mess.getAllData());
+	mess.cleanall();
+	mess.makeMessage(getDeviceID(), iEntity::APPSERVER_DEVICEID,
+			PriorityMessage::MESSTYPE_CONNECT, PriorityMessage::NOACK,
+			std::make_shared<std::string>(payload));
+	ap_send(mess.getAllData(),-1);
 
 	//受信スタート
 	toAPServerSocket->start_sendrecv_forever(true, true);
@@ -315,7 +328,7 @@ bool IoTDevices::ap_send(std::shared_ptr<std::string> data, int rate) {
 	if (rate < 0) {
 		return toAPServerSocket->basic_send(data);
 	} else {
-		toAPServerSocket->limit_send(data, rate);//TODO bpsは仮
+		toAPServerSocket->limit_send(data, rate); //TODO bpsは仮
 		return true;
 	}
 }

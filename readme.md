@@ -40,14 +40,14 @@ $ make -f makefile_dv
 ```
 1. Run servers
 ```sh
-$ ./2015IotPriorityLimiter_brserver PRIORITY_REQUIRE_FILE
-$ ./2015IotPriorityLimiter_appserver
+$ ./IotPriorityMechanism_brserver PRIORITY_REQUIRE_FILE
+$ ./IotPriorityMechanism_appserver
 ```
  `ATTEPRIORITY_REQUIRE` : JSON files that described priority requirements are exists such as sy_*.json .  
 
 1. Run IoT devices
 ```sh
-$ ./2015IotPriorityLimiter_device SERVER_IP DEVICE_ID SENDDATA DATA_TYPE
+$ ./IotPriorityMechanism_device SERVER_IP DEVICE_ID SENDDATA DATA_TYPE
 ```
 `SERVER_IP` : IP address (Ipv4) of the broker server and the applictaion server.   
 `DEVICE_ID` : Any numbers in 1 to 254.  

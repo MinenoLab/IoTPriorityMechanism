@@ -325,7 +325,7 @@ public:
 private:
 	std::shared_ptr<IoTDevices> device;
 	struct timeval PrevTime;
-	static const int INTERVAL;
+	static const int INTERVAL=60;
 };
 
 /**

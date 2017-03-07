@@ -37,8 +37,6 @@
 #include "StateBase.h"
 #include "structure/UpdateMessage.h"
 
-namespace asio = boost::asio;
-
 namespace IoTPriority {
 
 class BrokerServer: public iEntity, public std::enable_shared_from_this<
@@ -212,8 +210,8 @@ public:
 	std::thread queuethread,accept_ap_th,accept_dv_th;
 
 	//<did,sesid>
-	bimaps::bimap<int, int> ap_session_id_map;
-	bimaps::bimap<int, int> dv_session_id_map;
+	boost::bimaps::bimap<int, int> ap_session_id_map;
+	boost::bimaps::bimap<int, int> dv_session_id_map;
 
 	//---仮変数関数
 	float prevrate;
@@ -240,7 +238,7 @@ public:
 private:
 	std::shared_ptr<Sync_ServerSockets> toAPServerSocket;
 	std::shared_ptr<Sync_ServerSockets> toIotDeviceSocket;
-	asio::io_service io_service_AP, io_service_DV;
+	boost::asio::io_service io_service_AP, io_service_DV;
 	std::vector<PTEntity> pTable;
 	APAdminTable apTable;
 	DeviceAdminTable dvTable;
@@ -256,11 +254,11 @@ private:
 	std::shared_ptr<std::unordered_map <int,std::shared_ptr<std::unordered_map<int,std::pair<int,int>>>>> SendingIDmap;
 	void init_onlypriority();
 	void onRecv_base(std::string data, int sesid, Multi_MessageQueue<PriorityMessage>* recvqueue,
-			bimaps::bimap<int, int>* sesidmap, std::string* remaindata, std::shared_ptr<Sync_ServerSockets> sock);
-	void onExecute_connect(std::shared_ptr<PriorityMessage> mess, bimaps::bimap<int, int>* sesidmap,int sesid, std::shared_ptr<Sync_ServerSockets> sock);
+			boost::bimaps::bimap<int, int>* sesidmap, std::string* remaindata, std::shared_ptr<Sync_ServerSockets> sock);
+	void onExecute_connect(std::shared_ptr<PriorityMessage> mess, boost::bimaps::bimap<int, int>* sesidmap,int sesid, std::shared_ptr<Sync_ServerSockets> sock);
 
 	/**
-	 * @breif 割り込み処理を記述するクラス
+	 * @breif 割り込み処理を記述するクラスbaseNotifyALLsendingDevice
 	 */
 	class InterruptController{
 	public:
@@ -315,7 +313,7 @@ private:
 		void popprevIDmap();
 		bool releaseprevIDmap(int deviceID, int DataID);
 		int readMapPriority();
-		void baseNotifyALLsendingDevices(int messType,std::shared_ptr<std::string> data, int sesid);
+		void baseNotifyALLsendingDevices(int messType,std::shared_ptr<std::string> data);
 	};
 
 public:
@@ -374,7 +372,7 @@ private:
 class B_State05: public StateBase {
 public:
 	B_State05(std::shared_ptr<BrokerServer> server);
-	virtual ~B_State05();B_State05
+	virtual ~B_State05();
 	std::string execute();
 private:
 	std::shared_ptr<BrokerServer> Server;

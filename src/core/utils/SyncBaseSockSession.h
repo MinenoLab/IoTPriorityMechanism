@@ -16,9 +16,9 @@
 #include <boost/asio.hpp>
 #include "../structure/MultiMessageQueue.h"
 #include "../structure/MultiMessageStack.h"
+#include "../iEntity.h"
 
-namespace asio = boost::asio;
-using asio::ip::tcp;
+using boost::asio::ip::tcp;
 
 namespace IoTPriority {
 
@@ -136,7 +136,7 @@ private:
 	bool used_basicSend, used_basicRecv;
 	bool flag_sendChange,flag_rateChange,flag_rateChangeAbs;
 	float changeRateValue,changeAbsRateValue;
-	asio::streambuf receive_buffer;
+	boost::asio::streambuf receive_buffer;
 	std::mutex sendmtx, recvmtx, gmtx,changemtx;
 	SockState sstate;
 	/**

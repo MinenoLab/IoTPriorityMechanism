@@ -37,13 +37,13 @@ $ make -f makefile_dv
 ```
 1. サーバサイドのプログラム実行
 ```sh
-$ ./2015IotPriorityLimiter_brserver PRIORITY_REQUIRE_FILE
-$ ./2015IotPriorityLimiter_appserver
+$ ./IotPriorityMechanism_brserver PRIORITY_REQUIRE_FILE
+$ ./IotPriorityMechanism_appserver
 ```
 ※PRIORITY_REQUIRE…優先度要求を記したJSONファイル sy_*.jsonがサンプルとして存在します。
 1. IoTデバイスのプログラム実行
 ```sh
-$ ./2015IotPriorityLimiter_device SERVER_IP DEVICE_ID SENDDATA DATA_TYPE
+$ ./IotPriorityMechanism_device SERVER_IP DEVICE_ID SENDDATA DATA_TYPE
 ```
 ※　SERVER_IP…brokerサーバ、APサーバのIP(IPv4)  
   DEVICE_ID…1~254の任意の数字  

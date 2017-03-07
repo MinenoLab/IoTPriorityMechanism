@@ -20,6 +20,7 @@ D_State11::~D_State11() {
 }
 
 std::string D_State11::execute() {
+	std::cerr<<"[DV] State11"<<std::endl;
 	if (device->br_checkState() == Sync_BaseSockSession::SockState::NONACTIVE) {
 		bool ret = device->br_startReconnect();
 		if (!ret) {

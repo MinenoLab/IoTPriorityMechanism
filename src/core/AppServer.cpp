@@ -48,7 +48,7 @@ void AppServer::initState() {
 	auto state7 = std::make_shared<StateSwicher>(
 			std::make_shared<A_State07>(shared_from_this()), name_state6);
 	auto state8 = std::make_shared<StateSwicher>(
-				std::make_shared<A_State08>(shared_from_this()), name_state6);
+			std::make_shared<A_State08>(shared_from_this()), name_state6);
 
 #ifdef CHECK
 	std::cerr<<"ok--"<<std::endl;
@@ -76,6 +76,14 @@ void AppServer::run_Entitiy() {
 	toBrokerSocket->start_sendrecv_forever(false, true);
 	accept_dv_th = std::thread(&Sync_ServerSockets::accept, toIotDeviceSocket,
 			30);	//仮
+
+	//connectメッセージ送信
+	PriorityMessage mess;
+	std::string payload = BinaryConverter::int8toStr(0);
+	mess.makeMessage(iEntity::APPSERVER_DEVICEID, iEntity::BROKER_DEVICEID,
+			PriorityMessage::MESSTYPE_CONNECT, PriorityMessage::NOACK,
+			std::make_shared<std::string>(payload));
+	br_send(mess.getAllData());
 	//受信スタート
 	//実行
 	auto next = execFirstState();
@@ -211,7 +219,7 @@ int AppServer::dv_send(int RecieverDeviceID,
 	return 0;
 }
 
-void AppServer::dv_close(int sesid){
+void AppServer::dv_close(int sesid) {
 	toIotDeviceSocket->closeSession(sesid);
 }
 
@@ -275,6 +283,8 @@ void AppServer::onRecvFromDevices(std::string data, int sesid) {
 		if (!mess->isAllDataRecieved())
 			break;
 
+		std::cerr<<"messType is "<<mess->getMessType()<<std::endl;
+
 		switch (mess->getMessType()) {
 		case PriorityMessage::MESSTYPE_CONNECT:
 			rdata = recvFunctions->execute_connect(mess, sesid, rdata);
@@ -322,7 +332,7 @@ void AppServer::onRecvFromBroker(std::string data, int sesid) {
 
 void AppServer::changeRecvData(int sesid) {
 	std::cerr << "App_data_change" << std::endl;
-	int pri = devid_pri_map[dvid_sesid_map.right[sesid]];
+	int pri = devid_pri_map[dvid_sesid_map.right.at(sesid)];
 	auto p = std::make_pair(pri, device_remaindata[sesid]);
 	remainstack[sesid].push(std::make_shared<std::pair<int, std::string>>(p));
 	device_remaindata[sesid] = "";
@@ -362,7 +372,7 @@ void AppServer::decrementRecvCounter() {
 	}
 }
 
-/* namespace IoTPriority */
+}/* namespace IoTPriority */
 
 /*--------------------------
  int main() {
